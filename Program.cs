@@ -1,28 +1,30 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-
 using ScreepsDotNet.API.World;
+
+
 
 namespace ScreepsDotNet {
 public static partial class Program {
-    private static IGame? game;
+    static IGame? _game;
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(Program))]
     public static void Main() {}
 
     [System.Runtime.Versioning.SupportedOSPlatform("wasi")]
     public static void Init() {
-        game = new Native.World.NativeGame();
+        _game = new Native.World.NativeGame();
+        ScreepsMachine.Init(_game);
     }
 
     [System.Runtime.Versioning.SupportedOSPlatform("wasi")]
     public static void Loop() {
-        if (game == null) {
+        if (_game == null) {
             return;
         }
 
-        game.Tick();
-        Console.WriteLine($"Hello world from C#, the current tick is {game.Time}");
+        _game.Tick();
+        ScreepsMachine.Loop();
     }
 }
 }
